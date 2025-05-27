@@ -16,3 +16,6 @@ struct dspelement main_menu[] = {
 	{EL_H_CAP,          {.i=1},                                                     NULL},
 		{EL_PLAINTEXT,  {.v="This is only one line"},                               NULL},
 };
+
+#define OUT_BUFFER_SIZE (8192)
+
