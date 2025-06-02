@@ -8,22 +8,7 @@
 #include <string.h>
 #include <sys/ioctl.h>
 
-#define CLRM_RGB 0
-#define CLRM_256 1
-#define CLRM_USR 2
-
-struct cchar {
-	char c;
-	unsigned char color_mode;
-	union {
-		unsigned short int clr;
-		struct {
-			unsigned short int r;
-			unsigned short int g;
-			unsigned short int r;
-		};
-	};
-};
+#include "cchar.h"
 
 static struct termios term;
 static struct cchar **prev_screen;
@@ -110,14 +95,10 @@ void move_cursor_to(unsigned int ln, unsigned int ix) {
 void render_screen_line(unsigned int ln) {
 	unsigned int i;
 	unsigned char color_mode = -1;
-	union {
-		unsigned short int clr;
-		struct {
-			unsigned short int r;
-			unsigned short int g;
-			unsigned short int r;
-		};
-	};
+	unsigned short int clr;
+	unsigned short int r;
+	unsigned short int g;
+	unsigned short int b;
 
 	move_cursor_to(ln, 0);
 	for(i = 0; i < scr_w; ++i) {
@@ -192,7 +173,12 @@ int line_diff(unsigned int ln) {
 	unsigned int i, diff = -1;	/* return -1 when one change found */
 
 	for(i = 0; i < scr_w; ++i) {
-		if(prev_screen[i][ln] != current_screen[i][ln]) {
+		if(prev_screen[i][ln].c != current_screen[i][ln].c ||
+			prev_screen[i][ln].color_mode != current_screen[i][ln].color_mode ||
+			(prev_screen[i][ln].color_mode == CLRM_256 || prev_screen[i][ln].color_mode == CLRM_USR) && prev_screen[i][ln].clr !=
+				current_screen[i][ln].clr ||
+			prev_screen[i][ln].color_mode == CLRM_RGB && (prev_screen[i][ln].r != current_screen[i][ln].r || prev_screen[i][ln].g
+				!= current_screen[i][ln].g || prev_screen[i][ln].b != current_screen[i][ln].b)) {
 			if(diff == -1) {
 				diff = i;
 			} else {
