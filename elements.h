@@ -10,6 +10,7 @@ unsigned int vertical_count(struct dspelement *menu, unsigned int *i);
 unsigned int vertical_count_divider(struct dspelement *menu, unsigned int *i);
 void init_element(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 void init_element_divider(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
+void delete_element(struct dspelement *menu, unsigned int *i);
 void render_element(struct dspelement *menu, unsigned int *i);
 void render_element_divider(struct dspelement *menu, unsigned int *i);
 
@@ -62,8 +63,6 @@ unsigned int vertical_count_divider(struct dspelement *menu, unsigned int *i) {
 }
 
 void init_element(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
-	unsigned int j;
-
 	switch(menu[*i].type) {
 		case EL_DIVIDER:
 			init_element_divider(menu, i, x, y, w, h);
@@ -96,6 +95,14 @@ void init_element_divider(struct dspelement *menu, unsigned int *i, unsigned int
 		init_element(menu, i, cx, y, base_w + (*i < this + remainder ? 1 : 0), h);
 		cx += base_w + (*i < this + remainder ? 1 : 0);
 	}
+}
+
+void delete_element(struct dspelement *menu, unsigned int *i) {
+	if(menu[*i].data) {
+		free(menu[*i].data);
+	}
+	menu[*i].x = menu[*i].y = menu[*i].w = menu[*i].h = 0;
+	++(*i);
 }
 
 #include <stdio.h>
