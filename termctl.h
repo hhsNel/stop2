@@ -89,7 +89,7 @@ void check_resolution() {
 }
 
 void move_cursor_to(unsigned int ln, unsigned int ix) {
-	sprintf(output_buffer, "\033[%u;%uH", ln, ix);
+	sprintf(output_buffer + strlen(output_buffer), "\033[%u;%uH", ln, ix);
 }
 
 void render_screen_line(unsigned int ln) {
@@ -109,15 +109,15 @@ void render_screen_line(unsigned int ln) {
 					r = current_screen[i][ln].r;
 					g = current_screen[i][ln].g;
 					b = current_screen[i][ln].b;
-					sprintf(output_buffer, "\033[38;2;%hu;%hu;%hum%c", r, g, b, current_screen[i][ln].c);
+					sprintf(output_buffer + strlen(output_buffer), "\033[38;2;%hu;%hu;%hum%c", r, g, b, current_screen[i][ln].c);
 					break;
 				case CLRM_256:
 					clr = current_screen[i][ln].clr;
-					sprintf(output_buffer, "\033[38;5;%hum%c", clr, current_screen[i][ln].c);
+					sprintf(output_buffer + strlen(output_buffer), "\033[38;5;%hum%c", clr, current_screen[i][ln].c);
 					break;
 				case CLRM_USR:
 					clr = current_screen[i][ln].clr;
-					sprintf(output_buffer, "\033[3%hum%c", clr, current_screen[i][ln].c);
+					sprintf(output_buffer + strlen(output_buffer), "\033[3%hum%c", clr, current_screen[i][ln].c);
 			}
 		} else {
 			switch(color_mode) {
@@ -126,25 +126,25 @@ void render_screen_line(unsigned int ln) {
 						r = current_screen[i][ln].r;
 						g = current_screen[i][ln].g;
 						b = current_screen[i][ln].b;
-						sprintf(output_buffer, "\033[38;2;%hu;%hu;%hum%c", r, g, b, current_screen[i][ln].c);
+						sprintf(output_buffer + strlen(output_buffer), "\033[38;2;%hu;%hu;%hum%c", r, g, b, current_screen[i][ln].c);
 					} else {
-						sprintf(output_buffer, "%c", current_screen[i][ln].c);
+						sprintf(output_buffer + strlen(output_buffer), "%c", current_screen[i][ln].c);
 					}
 					break;
 				case CLRM_256:
 					if(current_screen[i][ln].clr != clr) {
 						clr = current_screen[i][ln].clr;
-						sprintf(output_buffer, "\033[38;5;%hum%c", clr, current_screen[i][ln].c);
+						sprintf(output_buffer + strlen(output_buffer), "\033[38;5;%hum%c", clr, current_screen[i][ln].c);
 					} else {
-						sprintf(output_buffer, "%c", current_screen[i][ln].c);
+						sprintf(output_buffer + strlen(output_buffer), "%c", current_screen[i][ln].c);
 					}
 					break;
 				case CLRM_USR:
 					if(current_screen[i][ln].clr != clr) {
 						clr = current_screen[i][ln].clr;
-						sprintf(output_buffer, "\033[3%hum%c", clr, current_screen[i][ln].c);
+						sprintf(output_buffer + strlen(output_buffer), "\033[3%hum%c", clr, current_screen[i][ln].c);
 					} else {
-						sprintf(output_buffer, "%c", current_screen[i][ln].c);
+						sprintf(output_buffer + strlen(output_buffer), "%c", current_screen[i][ln].c);
 					}
 			}
 		}
@@ -162,7 +162,7 @@ void render_screen() {
 
 void render_char(unsigned int x, unsigned int y) {
 	move_cursor_to(x, y);
-	sprintf(output_buffer, "\033[38;2;%hu;%hu;%hum%c", 
+	sprintf(output_buffer + strlen(output_buffer), "\033[38;2;%hu;%hu;%hum%c", 
 		current_screen[x][y].r,
 		current_screen[x][y].g,
 		current_screen[x][y].b,
@@ -170,7 +170,7 @@ void render_char(unsigned int x, unsigned int y) {
 }
 
 int line_diff(unsigned int ln) {
-	unsigned int i, diff = -1;	/* return -1 when one change found */
+	unsigned int i, diff = -1;	/* return -1 when no changes found */
 
 	for(i = 0; i < scr_w; ++i) {
 		if(prev_screen[i][ln].c != current_screen[i][ln].c ||

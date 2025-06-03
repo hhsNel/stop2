@@ -4,10 +4,11 @@ struct dspelement help_menu[] = {
 	{EL_PLAINTEXT,       {.v="some text"},                                          NULL},
 };
 
+#define CAST_MENU(X) ((void (*)(unsigned int,unsigned int,unsigned int,unsigned int,struct cchar **))(X))
 /* main menu */
 struct dspelement main_menu[] = {
 /*	 element type        argument                                                   input */
-	{EL_MENU_BUTTON,    {.v="menu btn",.i=sizeof(help_menu)/sizeof(*help_menu)},    help_menu},
+	{EL_MENU_BUTTON,    {.v="menu btn",.i=sizeof(help_menu)/sizeof(*help_menu)},    CAST_MENU(help_menu)},
 	{EL_GRAPH_OVER_TIME,{0},                                                        vcpu_load},
 	{EL_DIVIDER,        {.i=2},                                                     NULL},
 		{EL_VALUE,      {.v="%d"},                                                  vram_max},

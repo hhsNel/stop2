@@ -7,7 +7,7 @@
 unsigned int vertical_offset(struct dspelement *menu, unsigned int *i);
 unsigned int vertical_offset_divider(struct dspelement *menu, unsigned int *i);
 unsigned int vertical_count(struct dspelement *menu, unsigned int *i);
-unsigned int vertical_count_divider(struct dspelement *i, unsigned int *i);
+unsigned int vertical_count_divider(struct dspelement *menu, unsigned int *i);
 void init_element(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 void init_element_divider(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 void render_element(struct dspelement *menu, unsigned int *i);
@@ -66,7 +66,7 @@ void init_element(struct dspelement *menu, unsigned int *i, unsigned int x, unsi
 
 	switch(menu[*i].type) {
 		case EL_DIVIDER:
-			init_element_divider(menu, i);
+			init_element_divider(menu, i, x, y, w, h);
 			return;
 		default:
 			menu[*i].x = x;
@@ -95,6 +95,22 @@ void init_element_divider(struct dspelement *menu, unsigned int *i, unsigned int
 	while(*i < this + menu[this].arg.i) {
 		init_element(menu, i, cx, y, base_w + (*i < this + remainder ? 1 : 0), h);
 		cx += base_w + (*i < this + remainder ? 1 : 0);
+	}
+}
+
+#include <stdio.h>
+void render_element(struct dspelement *menu, unsigned int *i) {
+	//switch(menu[*i].type) {
+	printf(" ==> NOT IMPLEMENTED YET\n");
+	++(*i);
+}
+
+void render_element_divider(struct dspelement *menu, unsigned int *i) {
+	unsigned int this = *i;
+
+	++(*i);
+	while(*i < this + menu[this].arg.i) {
+		render_element(menu, i);
 	}
 }
 

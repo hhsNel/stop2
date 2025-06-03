@@ -16,7 +16,7 @@ struct argument {
 struct dspelement {
 	int type;
 	struct argument arg;
-	void *input(unsigned int x, unsigned int y, unsigned int w, unsigned int h, struct cchar **buffer);
+	void (*input)(unsigned int x, unsigned int y, unsigned int w, unsigned int h, struct cchar **buffer);
 	unsigned int x, y, w, h;
 	void *data;
 };
