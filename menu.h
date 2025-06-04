@@ -32,7 +32,7 @@ unsigned int total_offset() {
 unsigned int total_count() {
 	unsigned int i, count = 0;
 
-	SIMOLE_ITERATE(i, count +=, vertical_count);
+	SIMPLE_ITERATE(i, count +=, vertical_count);
 	return count;
 }
 
@@ -48,7 +48,7 @@ void init_menu(unsigned int width, unsigned int height) {
 	i = 0;
 	while(i < current_length) {
 		h = base_h + (i < remainder ? 1 : 0);
-		init_element(menu, &i, 0, cy, width, h);
+		init_element(current_menu, &i, 0, cy, width, h);
 		cy += h;
 	}
 }

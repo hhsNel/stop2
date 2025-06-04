@@ -5,6 +5,7 @@
 #include "config.h"
 #include "termctl.h"
 #include "elements.h"
+#include "menu.h"
 
 int main(int argc, char **argv) {
 	init_term();
