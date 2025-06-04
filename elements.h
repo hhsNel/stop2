@@ -3,6 +3,7 @@
 
 #include "termctl.h"
 #include "dspelement.h"
+#include "elementdisplay.h"
 
 unsigned int vertical_offset(struct dspelement *menu, unsigned int *i);
 unsigned int vertical_offset_divider(struct dspelement *menu, unsigned int *i);
@@ -20,7 +21,7 @@ unsigned int vertical_offset(struct dspelement *menu, unsigned int *i) {
 			return vertical_offset_divider(menu, i);
 		case EL_H_CAP:
 			*i += 2;
-			return menu[*i].arg.i;
+			return menu[*i - 2].arg.i;
 		default:
 			++(*i);
 			return 0;
@@ -31,7 +32,7 @@ unsigned int vertical_offset_divider(struct dspelement *menu, unsigned int *i) {
 	unsigned int max = 0, this = *i, c;
 
 	++(*i);
-	while(*i < this + menu[this].arg.i) {
+	while(*i <= this + menu[this].arg.i) {
 		c = vertical_offset(menu, i);
 		if(c > max) max = c;
 	}
@@ -41,7 +42,7 @@ unsigned int vertical_offset_divider(struct dspelement *menu, unsigned int *i) {
 unsigned int vertical_count(struct dspelement *menu, unsigned int *i) {
 	switch(menu[*i].type) {
 		case EL_DIVIDER:
-			return vertical_offset_divider(menu, i);
+			return vertical_count_divider(menu, i);
 		case EL_H_CAP:
 			*i += 2;
 			return 0;
@@ -55,7 +56,7 @@ unsigned int vertical_count_divider(struct dspelement *menu, unsigned int *i) {
 	unsigned int max = 0, this = *i, c;
 
 	++(*i);
-	while(*i < this + menu[this].arg.i) {
+	while(*i <= this + menu[this].arg.i) {
 		c = vertical_count(menu, i);
 		if(c > max) max = c;
 	}
@@ -91,7 +92,7 @@ void init_element_divider(struct dspelement *menu, unsigned int *i, unsigned int
 	menu[this].data = NULL;
 
 	++(*i);
-	while(*i < this + menu[this].arg.i) {
+	while(*i <= this + menu[this].arg.i) {
 		init_element(menu, i, cx, y, base_w + (*i < this + remainder ? 1 : 0), h);
 		cx += base_w + (*i < this + remainder ? 1 : 0);
 	}
@@ -107,8 +108,17 @@ void delete_element(struct dspelement *menu, unsigned int *i) {
 
 #include <stdio.h>
 void render_element(struct dspelement *menu, unsigned int *i) {
-	//switch(menu[*i].type) {
-	printf(" ==> NOT IMPLEMENTED YET\n");
+	switch(menu[*i].type) {
+		case EL_PLAINTEXT:
+			display_plaintext(menu[*i]);
+			break;
+		case EL_DIVIDER:
+			render_element_divider(menu, i);
+			break;
+		default:
+			display_fallback(menu[*i]);
+			break;
+	}
 	++(*i);
 }
 
@@ -116,7 +126,7 @@ void render_element_divider(struct dspelement *menu, unsigned int *i) {
 	unsigned int this = *i;
 
 	++(*i);
-	while(*i < this + menu[this].arg.i) {
+	while(*i <= this + menu[this].arg.i) {
 		render_element(menu, i);
 	}
 }

@@ -38,12 +38,14 @@ void init_term() {
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 	tcgetattr(STDIN_FILENO, &term);
 
-	prev_screen = (struct cchar **)malloc(w.ws_row * sizeof(struct cchar *));
-	current_screen = (struct cchar **)malloc(w.ws_row * sizeof(struct cchar *));
-	for(i = 0; i < w.ws_row; ++i) {
+	prev_screen = (struct cchar **)malloc(w.ws_col * sizeof(struct cchar *));
+	current_screen = (struct cchar **)malloc(w.ws_col * sizeof(struct cchar *));
+	for(i = 0; i < w.ws_col; ++i) {
 		prev_screen[i] = (struct cchar *)malloc(w.ws_col * sizeof(struct cchar));
 		current_screen[i] = (struct cchar *)malloc(w.ws_col * sizeof(struct cchar));
 	}
+	scr_w = w.ws_col;
+	scr_h = w.ws_row;
 }
 
 void enter_immediate() {
@@ -82,8 +84,8 @@ void check_resolution() {
 	struct winsize w;
 
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-	if(w.ws_row != scr_w || w.ws_col != scr_h) {
-		resize_screen(w.ws_row, w.ws_col);
+	if(w.ws_col != scr_w || w.ws_row != scr_h) {
+		resize_screen(w.ws_col, w.ws_row);
 		render_screen();
 	}
 }
@@ -200,6 +202,7 @@ void copy_to_previous_buff() {
 }
 
 void flush_buffer() {
+	write(STDOUT_FILENO, "\033[2J", 4);
 	write(STDOUT_FILENO, output_buffer, strlen(output_buffer));
 	output_buffer[0] = '\0';
 }
