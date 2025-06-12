@@ -117,6 +117,9 @@ void render_element(struct dspelement *menu, unsigned int *i) {
 		case EL_PLAINTEXT:
 			display_plaintext(menu[*i]);
 			break;
+		case EL_VALUE:
+			display_value(menu[*i]);
+			break;
 		case EL_DIVIDER:
 			render_element_divider(menu, i);
 			return;

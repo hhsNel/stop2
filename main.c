@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
 	check_resolution();
 	disable_wrapping();
 	init_menu(scr_w, scr_h);
+	update_sysinfo();
 	render_elements();
 	render_screen();
 	flush_buffer();

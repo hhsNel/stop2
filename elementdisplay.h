@@ -1,11 +1,15 @@
 #ifndef ELEMENTDISPLAY_H
 #define ELEMENTDISPLAY_H
 
+#include <stdint.h>
+#include <inttypes.h>
+
 #include "dspelement.h"
 #include "termctl.h"
 
 void write_text_in_bounds(char *str, struct cchar ex, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 void display_plaintext(struct dspelement el);
+void display_value(struct dspelement el);
 void display_fallback(struct dspelement el);
 
 void write_text_in_bounds(char *str, struct cchar ex, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
@@ -26,6 +30,18 @@ void display_plaintext(struct dspelement el) {
 	
 	ex.foreground = txt_foreground;
 	write_text_in_bounds(el.arg.v, ex, el.x, el.y, el.w, el.h);
+}
+
+void display_value(struct dspelement el) {
+	int64_t value;
+	char buffer[20];
+	struct cchar ex;
+
+	value = ((value_function)el.input)(el.arg, &el.data);
+	snprintf(buffer, 20, "%" PRId64, value);
+	
+	ex.foreground = value_foreground;
+	write_text_in_bounds(buffer, ex, el.x, el.y, el.w, el.h);
 }
 
 void display_fallback(struct dspelement el) {
