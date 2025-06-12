@@ -48,8 +48,7 @@ void init_menu(unsigned int width, unsigned int height) {
 	i = 0;
 	while(i < current_length) {
 		h = base_h + (i < remainder ? 1 : 0);
-		init_element(current_menu, &i, 0, cy, width, h);
-		cy += h;
+		cy += init_element(current_menu, &i, 0, cy, width, h);
 	}
 }
 

@@ -9,8 +9,8 @@ unsigned int vertical_offset(struct dspelement *menu, unsigned int *i);
 unsigned int vertical_offset_divider(struct dspelement *menu, unsigned int *i);
 unsigned int vertical_count(struct dspelement *menu, unsigned int *i);
 unsigned int vertical_count_divider(struct dspelement *menu, unsigned int *i);
-void init_element(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
-void init_element_divider(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
+unsigned int init_element(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
+unsigned int init_element_divider(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 void delete_element(struct dspelement *menu, unsigned int *i);
 void render_element(struct dspelement *menu, unsigned int *i);
 void render_element_divider(struct dspelement *menu, unsigned int *i);
@@ -63,27 +63,31 @@ unsigned int vertical_count_divider(struct dspelement *menu, unsigned int *i) {
 	return max;
 }
 
-void init_element(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
+unsigned int init_element(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
+	unsigned int cache;
+
 	switch(menu[*i].type) {
 		case EL_DIVIDER:
-			init_element_divider(menu, i, x, y, w, h);
-			return;
+			return init_element_divider(menu, i, x, y, w, h);
 		default:
 			menu[*i].x = x;
 			menu[*i].y = y;
 			menu[*i].w = w;
 			menu[*i].h = menu[*i].type == EL_H_CAP ? menu[*i].arg.i : h;
 			menu[*i].data = NULL;
-			++(*i);
 			if(menu[*i].type == EL_H_CAP) {
+				cache = menu[*i].arg.i;
+				++(*i);
 				init_element(menu, i, x, y, w, menu[*i - 1].arg.i);
+				return cache;
 			}
-			return;
+			++(*i);
+			return h;
 	}
 }
 
-void init_element_divider(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
-	unsigned int j, this = *i, base_w = w / menu[this].arg.i, remainder = w % menu[this].arg.i, cx = x;
+unsigned int init_element_divider(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
+	unsigned int this = *i, base_w = w / menu[this].arg.i, remainder = w % menu[this].arg.i, cx = x, max = 0, cache;
 	
 	menu[this].x = x;
 	menu[this].y = y;
@@ -93,9 +97,11 @@ void init_element_divider(struct dspelement *menu, unsigned int *i, unsigned int
 
 	++(*i);
 	while(*i <= this + menu[this].arg.i) {
-		init_element(menu, i, cx, y, base_w + (*i < this + remainder ? 1 : 0), h);
+		cache = init_element(menu, i, cx, y, base_w + (*i < this + remainder ? 1 : 0), h);
+		if(cache > max) max = cache;
 		cx += base_w + (*i < this + remainder ? 1 : 0);
 	}
+	return max;
 }
 
 void delete_element(struct dspelement *menu, unsigned int *i) {
@@ -106,7 +112,6 @@ void delete_element(struct dspelement *menu, unsigned int *i) {
 	++(*i);
 }
 
-#include <stdio.h>
 void render_element(struct dspelement *menu, unsigned int *i) {
 	switch(menu[*i].type) {
 		case EL_PLAINTEXT:
@@ -114,7 +119,7 @@ void render_element(struct dspelement *menu, unsigned int *i) {
 			break;
 		case EL_DIVIDER:
 			render_element_divider(menu, i);
-			break;
+			return;
 		default:
 			display_fallback(menu[*i]);
 			break;

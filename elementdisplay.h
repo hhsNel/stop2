@@ -24,16 +24,14 @@ void write_text_in_bounds(char *str, struct cchar ex, unsigned int x, unsigned i
 void display_plaintext(struct dspelement el) {
 	struct cchar ex;
 	
-	ex.color_mode = CLRM_USR;
-	ex.clr = 7;
+	ex.foreground = txt_foreground;
 	write_text_in_bounds(el.arg.v, ex, el.x, el.y, el.w, el.h);
 }
 
 void display_fallback(struct dspelement el) {
 	struct cchar ex;
 	
-	ex.color_mode = CLRM_USR;
-	ex.clr = 7;
+	ex.foreground = txt_foreground;
 	write_text_in_bounds("FALLBACK", ex, el.x, el.y, el.w, el.h);
 }
 
