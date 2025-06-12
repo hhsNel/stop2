@@ -74,6 +74,8 @@ void init_term() {
 void enter_immediate() {
 	term.c_lflag &= ~ICANON;
 	term.c_lflag &= ~ECHO;
+	term.c_cc[VTIME] = 0;
+	term.c_cc[VMIN] = 1;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
@@ -177,6 +179,9 @@ void render_screen_line(unsigned int ln) {
 void render_screen() {
 	unsigned int i;
 
+	strcpy(output_buffer, "\033[2J");
+	out_size = 4;
+
 	for(i = 0; i < scr_h; ++i) {
 		render_screen_line(i);
 	}
@@ -215,8 +220,8 @@ void copy_to_previous_buff() {
 }
 
 void flush_buffer() {
-	write(STDOUT_FILENO, "\033[2J", 4);
 	write(STDOUT_FILENO, output_buffer, out_size);
+	fflush(stdout);
 	output_buffer[0] = '\0';
 	out_size = 0;
 }
@@ -230,7 +235,7 @@ void render_diff() {
 		if(diff == -2) {
 			render_screen_line(i);
 		} else {
-			if(diff >= 0) {
+			if(diff <= -2) {
 				render_char(diff, i);
 			}
 		}

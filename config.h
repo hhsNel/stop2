@@ -35,3 +35,5 @@ struct color value_foreground = {
 	.clr = 5
 };
 
+#define POLL_TIMEOUT 5
+

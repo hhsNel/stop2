@@ -16,6 +16,7 @@ unsigned int total_count();
 void init_menu(unsigned int width, unsigned int height);
 void unload_menu();
 void render_elements();
+int menu_handle_input(char c);
 
 void load_menu(struct dspelement *menu, unsigned int length) {
 	current_menu = menu;
@@ -62,6 +63,11 @@ void render_elements() {
 	unsigned int i;
 
 	SIMPLE_ITERATE(i, , render_element);
+}
+
+int menu_handle_input(char c) {
+	printf("%c was pressed\n", c);
+	return 1;
 }
 
 #endif
