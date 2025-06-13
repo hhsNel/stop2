@@ -20,6 +20,7 @@ struct dspelement {
 	struct argument arg;
 	void *input;
 	struct color foreground;
+	struct color background;
 	unsigned int x, y, w, h;
 	void *data;
 };

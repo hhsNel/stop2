@@ -29,6 +29,7 @@ void display_plaintext(struct dspelement el) {
 	struct cchar ex;
 	
 	ex.foreground = el.foreground;
+	ex.background = el.background;
 	write_text_in_bounds(el.arg.v, ex, el.x, el.y, el.w, el.h);
 }
 
@@ -41,6 +42,7 @@ void display_value(struct dspelement el) {
 	snprintf(buffer, 20, "%" PRId64, value);
 	
 	ex.foreground = el.foreground;
+	ex.background = el.background;
 	write_text_in_bounds(buffer, ex, el.x, el.y, el.w, el.h);
 }
 
@@ -48,6 +50,7 @@ void display_fallback(struct dspelement el) {
 	struct cchar ex;
 	
 	ex.foreground = el.foreground;
+	ex.background = el.background;
 	write_text_in_bounds("FALLBACK", ex, el.x, el.y, el.w, el.h);
 }
 
