@@ -66,8 +66,7 @@ void render_elements() {
 }
 
 int menu_handle_input(char c) {
-	printf("%c was pressed\n", c);
-	return 1;
+	return c != 'q';
 }
 
 #endif

@@ -21,6 +21,8 @@ static unsigned int scr_w = 0, scr_h = 0;
 static char output_buffer[OUT_BUFF_SIZE];
 unsigned int out_size;
 
+void hide_cursor();
+void show_cursor();
 void disable_wrapping();
 void enable_wrapping();
 void init_term();
@@ -42,12 +44,24 @@ void render_diff();
 void set_cell(unsigned int x, unsigned int y, struct cchar c);
 void reset_region(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2);
 
+void hide_cursor() {
+	strcpy(output_buffer + out_size, "\033[?25l");
+	out_size += 6;
+}
+
+void show_cursor() {
+	strcpy(output_buffer + out_size, "\033[?25h");
+	out_size += 6;
+}
+
 void disable_wrapping() {
-	strcat(output_buffer, "\033[=7l");
+	strcpy(output_buffer + out_size, "\033[=7l");
+	out_size += 5;
 }
 
 void enable_wrapping() {
-	strcat(output_buffer, "\033[=7h");
+	strcpy(output_buffer + out_size, "\033[=7h");
+	out_size += 5;
 }
 
 void init_term() {

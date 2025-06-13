@@ -30,6 +30,7 @@ int main(int argc, char **argv) {
 	enter_immediate();
 	check_resolution();
 	disable_wrapping();
+	hide_cursor();
 	init_menu(scr_w, scr_h);
 	update_sysinfo();
 	render_elements();
@@ -44,6 +45,11 @@ int main(int argc, char **argv) {
 
 		usleep(50000);
 	}
+
+	enter_normal();
+	enable_wrapping();
+	show_cursor();
+	flush_buffer();
 
 	return 0;
 }
