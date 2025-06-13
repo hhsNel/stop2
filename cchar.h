@@ -16,6 +16,7 @@ struct color {
 struct cchar {
 	char c;
 	struct color foreground;
+	struct color background;
 };
 
 #endif

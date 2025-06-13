@@ -13,6 +13,9 @@
 #define ANSI_USR_F "\033[3%um"
 #define ANSI_256_F "\033[38;5;%um"
 #define ANSI_RGB_F "\033[38;2;%u;%u;%um"
+#define ANSI_USR_B "\033[4%um"
+#define ANSI_256_B "\033[48;5;%um"
+#define ANSI_RGB_B "\033[48;2;%u;%u;%um"
 
 static struct termios term;
 static struct cchar **prev_screen;
@@ -79,6 +82,7 @@ void init_term() {
 		for(j = 0; j < w.ws_row; ++j) {
 			current_screen[i][j].c = BG_CHAR;
 			current_screen[i][j].foreground = def_foreground;
+			current_screen[i][j].background = def_background;
 		}
 	}
 	scr_w = w.ws_col;
@@ -117,6 +121,7 @@ void resize_screen(unsigned int w, unsigned int h) {
 		for(j = 0; j < h; ++j) {
 			current_screen[i][j].c = BG_CHAR;
 			current_screen[i][j].foreground = def_foreground;
+			current_screen[i][j].background = def_background;
 		}
 	}
 	scr_w = w;
@@ -175,16 +180,22 @@ void output_char(char c) {
 
 void render_screen_line(unsigned int ln) {
 	unsigned int i;
-	struct color prev_fg;
+	struct color prev_fg, prev_bg;
 
 	move_cursor_to(ln, 0);
 	prev_fg = current_screen[0][ln].foreground;
+	prev_bg = current_screen[0][ln].background;
 	output_color(prev_fg, ANSI_USR_F, ANSI_256_F, ANSI_RGB_F);
+	output_color(prev_bg, ANSI_USR_B, ANSI_256_B, ANSI_RGB_B);
 	output_char(current_screen[0][ln].c);
 	for(i = 1; i < scr_w; ++i) {
 		if(!color_equal(current_screen[i][ln].foreground, prev_fg)) {
 			prev_fg = current_screen[i][ln].foreground;
 			output_color(prev_fg, ANSI_USR_F, ANSI_256_F, ANSI_RGB_F);
+		}
+		if(!color_equal(current_screen[i][ln].background, prev_bg)) {
+			prev_bg = current_screen[i][ln].background;
+			output_color(prev_bg, ANSI_USR_B, ANSI_256_B, ANSI_RGB_B);
 		}
 		output_char(current_screen[i][ln].c);
 	}
@@ -205,6 +216,7 @@ void render_screen() {
 void render_char(unsigned int x, unsigned int y) {
 	move_cursor_to(x, y);
 	output_color(current_screen[x][y].foreground, ANSI_USR_F, ANSI_256_F, ANSI_RGB_F);
+	output_color(current_screen[x][y].background, ANSI_USR_B, ANSI_256_B, ANSI_RGB_B);
 	output_char(current_screen[x][y].c);
 }
 
@@ -212,7 +224,9 @@ int line_diff(unsigned int ln) {
 	unsigned int i, diff = -1;	/* return -1 when no changes found */
 
 	for(i = 0; i < scr_w; ++i) {
-		if(current_screen[i][ln].c != prev_screen[i][ln].c || !color_equal(current_screen[i][ln].foreground, prev_screen[i][ln].foreground)) {
+		if(current_screen[i][ln].c != prev_screen[i][ln].c ||
+			!color_equal(current_screen[i][ln].foreground, prev_screen[i][ln].foreground) ||
+			!color_equal(current_screen[i][ln].background, prev_screen[i][ln].background)) {
 			if(diff == -1) {
 				diff = i;
 			} else {
@@ -268,6 +282,7 @@ void reset_region(unsigned int x1, unsigned int y1, unsigned int x2, unsigned in
 		for(y = y1; y < y2; ++y) {
 			current_screen[x][y].c = BG_CHAR;
 			current_screen[x][y].foreground = def_foreground;
+			current_screen[x][y].background = def_background;
 		}
 	}
 }

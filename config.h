@@ -25,6 +25,10 @@ struct color def_foreground = {
 	.color_mode = CLRM_USR,
 	.clr = 0
 };
+struct color def_background = {
+	.color_mode = CLRM_USR,
+	.clr = 0
+};
 #define BG_CHAR ' '
 
 #define POLL_TIMEOUT 5
