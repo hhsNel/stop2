@@ -19,8 +19,10 @@ struct dspelement main_menu[] = {
 		{EL_PLAINTEXT,  {.v="This is only one line"},                               NULL,          {.color_mode=CLRM_USR,.clr=7},      {.color_mode=CLRM_USR,.clr=0}},
 };
 
+/* size of the termctl.h output buffer. Worst case scenario, each character can be 19 bytes */
 #define OUT_BUFF_SIZE (65536)
 
+/* default foreground character, it's color, and it's background color */
 struct color def_foreground = {
 	.color_mode = CLRM_USR,
 	.clr = 0
@@ -31,5 +33,17 @@ struct color def_background = {
 };
 #define BG_CHAR ' '
 
+/* override for the selected element. CLRM_UNSET keeps the element's default */
+struct color selected_foreground = {
+	.color_mode = CLRM_UNSET
+};
+struct color selected_background = {
+	.color_mode = CLRM_RGB,
+	.r = 0,
+	.g = 0,
+	.b = 0
+};
+
+/* timeout used for poll call, milis */
 #define POLL_TIMEOUT 5
 

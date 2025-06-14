@@ -4,6 +4,7 @@
 #define CLRM_RGB 0
 #define CLRM_256 1
 #define CLRM_USR 2
+#define CLRM_UNSET 3
 
 struct color {
 	unsigned char color_mode;
