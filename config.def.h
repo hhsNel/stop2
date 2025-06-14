@@ -49,7 +49,8 @@ struct color selected_background = {
 struct key keybinds[] = {
 /*   char    action */
 	{'q',    quit},
-	{'j',    select_next},
-	{'k',    select_prev},
-}
+	{'j',    go_down},
+	{'k',    go_up},
+	{'\n',   interact},
+};
 

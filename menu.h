@@ -27,6 +27,9 @@ void render_elements();
 int menu_handle_input(char c);
 int select_next();
 int select_prev();
+int go_down();
+int go_up();
+int interact();
 
 void increment_selection() {
 	++selected_element;
@@ -113,7 +116,15 @@ void render_elements() {
 }
 
 int menu_handle_input(char c) {
-	return c != 'q';
+	int i;
+
+	for(i = 0; i < sizeof(keybinds)/sizeof(*keybinds); ++i) {
+		if(c == keybinds[i].trigger) {
+			return keybinds[i].action();
+		}
+	}
+
+	return 1;
 }
 
 int select_next() {
@@ -140,6 +151,27 @@ int select_prev() {
 	} while(selected_element != start);
 
 	return 0;
+}
+
+int go_down() {
+	if(selected_element != -1) {
+		select_next();
+	}
+	return 1;
+}
+
+int go_up() {
+	if(selected_element != -1) {
+		select_prev();
+	}
+	return 1;
+}
+
+int interact() {
+	if(selected_element != -1) {
+		interact_element(current_menu[selected_element]);
+	}
+	return 1;
 }
 
 #endif

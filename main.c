@@ -6,12 +6,15 @@
 #include "cchar.h"
 #include "dspelement.h"
 #include "funcs.h"
+#include "key.h"
+#include "keybinds.h"
 #include "config.h"
 #include "termctl.h"
 #include "elements.h"
 #include "menu.h"
 
 int handle_input();
+int quit();
 
 int handle_input() {
 	char c;
@@ -23,6 +26,10 @@ int handle_input() {
 		return menu_handle_input(c);
 	}
 	return 1;
+}
+
+int quit() {
+	return 0;
 }
 
 int main(int argc, char **argv) {

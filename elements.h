@@ -19,6 +19,7 @@ void interact_element(struct dspelement el);
 
 void load_menu(struct dspelement *menu, unsigned int length);
 void reset_selection();
+void init_menu(unsigned int width, unsigned int height);
 void unload_menu();
 
 unsigned int vertical_offset(struct dspelement *menu, unsigned int *i) {
@@ -159,7 +160,9 @@ void interact_element(struct dspelement el) {
 		case EL_MENU_BUTTON:
 			unload_menu();
 			load_menu(el.input, el.arg.i);
+			init_menu(scr_w, scr_h);
 			reset_selection();
+			reset_region(0, 0, scr_w, scr_h);
 			break;
 	}
 }
