@@ -38,12 +38,18 @@ struct color selected_foreground = {
 	.color_mode = CLRM_UNSET
 };
 struct color selected_background = {
-	.color_mode = CLRM_RGB,
-	.r = 0,
-	.g = 0,
-	.b = 0
+	.color_mode = CLRM_USR,
+	.clr = 4
 };
 
 /* timeout used for poll call, milis */
 #define POLL_TIMEOUT 5
+
+/* keybinds */
+struct key keybinds[] = {
+/*   char    action */
+	{'q',    quit},
+	{'j',    select_next},
+	{'k',    select_prev},
+}
 

@@ -17,6 +17,7 @@ static unsigned int selected_element = 0;
 void increment_selection();
 void decrement_selection();
 void load_menu(struct dspelement *menu, unsigned int length);
+void reset_selection();
 unsigned int total_offset();
 unsigned int total_count();
 void init_menu(unsigned int width, unsigned int height);
@@ -40,6 +41,13 @@ void decrement_selection() {
 void load_menu(struct dspelement *menu, unsigned int length) {
 	current_menu = menu;
 	current_length = length;
+}
+
+void reset_selection() {
+	selected_element = 0;
+	if(!select_next()) {
+		selected_element = -1;
+	}
 }
 
 unsigned int total_offset() {
@@ -91,8 +99,8 @@ void handle_rendering(struct dspelement *menu, unsigned int *i) {
 			menu[*i].background = selected_background;
 		}
 		render_element(menu, i);
-		menu[*i].foreground = orig_fg;
-		menu[*i].background = orig_bg;
+		menu[selected_element].foreground = orig_fg;
+		menu[selected_element].background = orig_bg;
 	} else {
 		render_element(menu, i);
 	}
@@ -113,7 +121,7 @@ int select_next() {
 
 	do {
 		increment_selection();
-		if(is_selectable(current_menu, &selected_element)) {
+		if(is_selectable(current_menu[selected_element])) {
 			return 1;
 		}
 	} while(selected_element != start);
@@ -126,7 +134,7 @@ int select_prev() {
 	
 	do {
 		decrement_selection();
-		if(is_selectable(current_menu, &selected_element)) {
+		if(is_selectable(current_menu[selected_element])) {
 			return 1;
 		}
 	} while(selected_element != start);

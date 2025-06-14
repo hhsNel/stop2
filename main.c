@@ -32,6 +32,7 @@ int main(int argc, char **argv) {
 	disable_wrapping();
 	hide_cursor();
 	init_menu(scr_w, scr_h);
+	reset_selection();
 	update_sysinfo();
 	render_elements();
 	render_screen();

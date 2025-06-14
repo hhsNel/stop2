@@ -14,7 +14,12 @@ unsigned int init_element_divider(struct dspelement *menu, unsigned int *i, unsi
 void delete_element(struct dspelement *menu, unsigned int *i);
 void render_element(struct dspelement *menu, unsigned int *i);
 void render_element_divider(struct dspelement *menu, unsigned int *i);
-int is_selectable(struct dspelement *menu, unsigned int *i);
+int is_selectable(struct dspelement el);
+void interact_element(struct dspelement el);
+
+void load_menu(struct dspelement *menu, unsigned int length);
+void reset_selection();
+void unload_menu();
 
 unsigned int vertical_offset(struct dspelement *menu, unsigned int *i) {
 	switch(menu[*i].type) {
@@ -140,12 +145,22 @@ void render_element_divider(struct dspelement *menu, unsigned int *i) {
 	}
 }
 
-int is_selectable(struct dspelement *menu, unsigned int *i) {
-	switch(menu[*i].type) {
+int is_selectable(struct dspelement el) {
+	switch(el.type) {
 		case EL_MENU_BUTTON:
 			return 1;
 		default:
 			return 0;
+	}
+}
+
+void interact_element(struct dspelement el) {
+	switch(el.type) {
+		case EL_MENU_BUTTON:
+			unload_menu();
+			load_menu(el.input, el.arg.i);
+			reset_selection();
+			break;
 	}
 }
 
