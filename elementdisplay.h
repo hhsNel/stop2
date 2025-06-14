@@ -10,6 +10,7 @@
 void write_text_in_bounds(char *str, struct cchar ex, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
 void display_plaintext(struct dspelement el);
 void display_value(struct dspelement el);
+void display_button(struct dspelement el);
 void display_fallback(struct dspelement el);
 
 void write_text_in_bounds(char *str, struct cchar ex, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
@@ -44,6 +45,14 @@ void display_value(struct dspelement el) {
 	ex.foreground = el.foreground;
 	ex.background = el.background;
 	write_text_in_bounds(buffer, ex, el.x, el.y, el.w, el.h);
+}
+
+void display_button(struct dspelement el) {
+	struct cchar ex;
+
+	ex.foreground = el.foreground;
+	ex.background = el.background;
+	write_text_in_bounds(el.data, ex, el.x, el.y, el.w, el.h);
 }
 
 void display_fallback(struct dspelement el) {

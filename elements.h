@@ -73,24 +73,31 @@ unsigned int vertical_count_divider(struct dspelement *menu, unsigned int *i) {
 unsigned int init_element(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
 	unsigned int cache;
 
-	switch(menu[*i].type) {
-		case EL_DIVIDER:
-			return init_element_divider(menu, i, x, y, w, h);
-		default:
-			menu[*i].x = x;
-			menu[*i].y = y;
-			menu[*i].w = w;
-			menu[*i].h = menu[*i].type == EL_H_CAP ? menu[*i].arg.i : h;
-			menu[*i].data = NULL;
-			if(menu[*i].type == EL_H_CAP) {
-				cache = menu[*i].arg.i;
-				++(*i);
-				init_element(menu, i, x, y, w, menu[*i - 1].arg.i);
-				return cache;
-			}
-			++(*i);
-			return h;
+	if(menu[*i].type == EL_DIVIDER) {
+		return init_element_divider(menu, i, x, y, w, h);
 	}
+	menu[*i].x = x;
+	menu[*i].y = y;
+	menu[*i].w = w;
+	menu[*i].h = h;
+	switch(menu[*i].type) {
+		case EL_H_CAP:
+			menu[*i].h = menu[*i].arg.i;
+			menu[*i].data = NULL;
+			cache = menu[*i].arg.i;
+			++(*i);
+			init_element(menu, i, x, y, w, menu[*i - 1].arg.i);
+			return cache;
+		case EL_MENU_BUTTON:
+			menu[*i].data = malloc(strlen(menu[*i].arg.v) + 18);
+			snprintf(menu[*i].data, strlen(menu[*i].arg.v)+18, "%s [%p]", menu[*i].arg.v, menu[*i].input);
+			break;
+		default:
+			menu[*i].data = NULL;
+			break;
+	}
+	++(*i);
+	return h;
 }
 
 unsigned int init_element_divider(struct dspelement *menu, unsigned int *i, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
@@ -126,6 +133,9 @@ void render_element(struct dspelement *menu, unsigned int *i) {
 			break;
 		case EL_VALUE:
 			display_value(menu[*i]);
+			break;
+		case EL_MENU_BUTTON:
+			display_button(menu[*i]);
 			break;
 		case EL_DIVIDER:
 			render_element_divider(menu, i);
