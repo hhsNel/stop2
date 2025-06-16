@@ -62,8 +62,6 @@ int main(int argc, char **argv) {
 			reset_region(0, 0, scr_w, scr_h);
 			prepare_menu();
 		}
-
-		usleep(50000);
 	}
 
 	enter_normal();
