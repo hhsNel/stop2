@@ -32,7 +32,7 @@ void init_term();
 void enter_immediate();
 void enter_normal();
 void resize_screen(unsigned int w, unsigned int h);
-void check_resolution();
+int check_resolution();
 void move_cursor_to(unsigned int ln, unsigned int ix);
 int color_equal(struct color c1, struct color c2);
 void output_char(char c);
@@ -128,14 +128,16 @@ void resize_screen(unsigned int w, unsigned int h) {
 	scr_h = h;
 }
 
-void check_resolution() {
+int check_resolution() {
 	struct winsize w;
 
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 	if(w.ws_col != scr_w || w.ws_row != scr_h) {
 		resize_screen(w.ws_col, w.ws_row);
 		render_screen();
+		return 1;
 	}
+	return 0;
 }
 
 void move_cursor_to(unsigned int ln, unsigned int ix) {

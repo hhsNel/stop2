@@ -15,6 +15,7 @@
 
 int handle_input();
 int quit();
+void prepare_menu();
 
 int handle_input() {
 	char c;
@@ -32,24 +33,35 @@ int quit() {
 	return 0;
 }
 
+void prepare_menu() {
+	init_menu(scr_w, scr_h);
+	update_sysinfo();
+	render_elements();
+	render_screen();
+	flush_buffer();
+}
+
 int main(int argc, char **argv) {
 	init_term();
 	enter_immediate();
 	check_resolution();
 	disable_wrapping();
 	hide_cursor();
-	init_menu(scr_w, scr_h);
-	reset_selection();
-	update_sysinfo();
-	render_elements();
-	render_screen();
 	flush_buffer();
+	reset_selection();
+	prepare_menu();
 
 	while(handle_input()) {
 		update_sysinfo();
 		render_elements();
 		render_diff();
 		flush_buffer();
+
+		if(check_resolution()) {
+			unload_menu();
+			reset_region(0, 0, scr_w, scr_h);
+			prepare_menu();
+		}
 
 		usleep(50000);
 	}
