@@ -21,6 +21,7 @@ void load_menu(struct dspelement *menu, unsigned int length);
 void reset_selection();
 void init_menu(unsigned int width, unsigned int height);
 void unload_menu();
+void handle_rendering(struct dspelement *menu, unsigned int *i);
 
 unsigned int vertical_offset(struct dspelement *menu, unsigned int *i) {
 	switch(menu[*i].type) {
@@ -152,7 +153,7 @@ void render_element_divider(struct dspelement *menu, unsigned int *i) {
 
 	++(*i);
 	while(*i <= this + menu[this].arg.i) {
-		render_element(menu, i);
+		handle_rendering(menu, i);
 	}
 }
 

@@ -48,6 +48,9 @@ void load_menu(struct dspelement *menu, unsigned int length) {
 
 void reset_selection() {
 	selected_element = 0;
+	if(is_selectable(current_menu[0])) {
+		return;
+	}
 	if(!select_next()) {
 		selected_element = -1;
 	}
