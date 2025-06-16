@@ -60,7 +60,7 @@ struct color selected_background = {
 };
 
 /* timeout used for poll call, milis */
-#define POLL_TIMEOUT 5
+#define POLL_TIMEOUT 125 /* 125 miliseconds = 4 updates per second */
 
 /* keybinds */
 struct key keybinds[] = {
